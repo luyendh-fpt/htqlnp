@@ -1,0 +1,94 @@
+﻿@using HTQLNP.Models
+@model HTQLNP.Models.StudentPunishment
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm("Save","StudentPunishment",FormMethod.Post)) 
+{
+    @Html.AntiForgeryToken()
+    
+<div class="form-horizontal">
+    <h4>StudentPunishment</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Rollnumber, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <input type="text" name="Autocomplete" value="" class="form-control typeahead" data-provide="typeahead"/>
+            <input type="hidden" name="Rollnumber" id="HelloId"/>
+            @Html.ValidationMessageFor(model => model.Rollnumber, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PunishmentTypeId, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.PunishmentTypeId, EnumHelper.GetSelectList(typeof(StudentPunishment.PunishmentType)),new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.PunishmentTypeId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Value, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Value, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Value, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            var $input = $('.typeahead');
+            $input.typeahead({
+                autoSelect: true,
+                source: function (query, process) {
+                    $.ajax({
+                            url: '/Students/GetListStudentData',
+                            type: 'GET',
+                            success: function(response) {
+                                // console.log(response)
+                                $.each (response, function() {
+                                    this.name = this.RollNumber + ' - ' + this.FullName;
+                                });
+                                return process(response);
+                            }
+                    });
+                }
+            });
+            $input.change(function() {
+                var current = $input.typeahead("getActive");
+                if (current) {
+                    // Some item from your model is active!
+                    if (current.name == $input.val()) {
+                        // This means the exact match is found. Use toLowerCase() if you want case insensitive match.
+                        $('#HelloId').val(current.RollNumber);
+                    } else {
+                        // This means it is only a partial match, you can either add a new item
+                        // or take the active if you don't want new items
+                    }
+                } else {
+                    // Nothing is active so it is a new value (or maybe empty value)
+                }
+            });
+
+        });
+    </script>
+}

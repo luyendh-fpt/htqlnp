@@ -1,0 +1,26 @@
+﻿@using HTQLNP.Models
+@model List<StudentPunishment>
+
+@{
+    ViewBag.Title = "Index";
+    var totalMoney = 0.0;
+    var totalPush = 0.0;
+}
+
+<h2>Index</h2>
+@TempData["msg"]
+<ul>
+    @foreach (var item in Model)
+    {
+        if (item.PunishmentTypeId == StudentPunishment.PunishmentType.PAY) {
+            totalMoney += item.Value;
+        }
+        else if (item.PunishmentTypeId == StudentPunishment.PunishmentType.PUSH)
+        {
+            totalPush += item.Value;
+        }
+        <li>@item.Rollnumber - @item.PunishmentTypeId - @item.Value</li>
+    }
+</ul>
+<p><b>Total Money: @totalMoney</b></p>
+<p><b>Total Pushup: @totalPush</b></p>
