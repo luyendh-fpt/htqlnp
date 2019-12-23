@@ -114,6 +114,7 @@ namespace HTQLNP.Controllers
             {
                 student.CreatedAt = DateTime.Now;
                 student.UpdatedAt = DateTime.Now;
+                student.DeletedAt = DateTime.Now;
                 db.Students.Add(student);
                 db.SaveChanges();
                 return RedirectToAction("Index");
